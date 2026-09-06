@@ -7,9 +7,9 @@
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; }
     body {
-      font-family: 'Segoe UI', Arial, sans-serif;
-      background: #1e1e2e;
-      color: #fff;
+      font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+      background: #18191a;
+      color: #e4e6eb;
       display: flex;
       justify-content: center;
       align-items: center;
@@ -17,13 +17,19 @@
       padding: 15px;
     }
     .card {
-      background: #2b2b3d;
+      background: #242526;
       width: 100%;
-      max-width: 420px;
+      max-width: 440px;
       padding: 24px;
-      border-radius: 18px;
+      border-radius: 16px;
       text-align: center;
-      box-shadow: 0 10px 25px rgba(0,0,0,0.5);
+      box-shadow: 0 8px 24px rgba(0,0,0,0.4);
+    }
+    .header {
+      font-size: 20px;
+      font-weight: bold;
+      margin-bottom: 15px;
+      color: #f0f2f5;
     }
     .content-box {
       min-height: 260px;
@@ -35,41 +41,42 @@
     }
     .media {
       max-width: 100%;
-      max-height: 260px;
-      border-radius: 12px;
+      max-height: 280px;
+      border-radius: 10px;
       margin-bottom: 12px;
       object-fit: contain;
     }
     .joke-text {
       font-size: 18px;
-      line-height: 1.5;
+      line-height: 1.6;
       white-space: pre-line;
       font-weight: 500;
     }
     .btn {
-      background: #ff5252;
+      background: #2d88ff;
       color: white;
       border: none;
-      padding: 14px 25px;
+      padding: 14px 20px;
       font-size: 17px;
       font-weight: bold;
       border-radius: 30px;
       cursor: pointer;
       width: 100%;
-      transition: background 0.2s;
+      transition: background 0.2s, transform 0.1s;
     }
-    .btn:hover { background: #ff7979; }
-    .btn:disabled { background: #7f8c8d; cursor: not-allowed; }
+    .btn:hover { background: #1a73e8; }
+    .btn:active { transform: scale(0.98); }
+    .btn:disabled { background: #4e5052; cursor: not-allowed; }
   </style>
 </head>
 <body>
 
 <div class="card">
-  <h2>🔥 আনলিমিটেড ফান 🔥</h2>
+  <div class="header">🔥 আনলিমিটেড ফানি জোকস ও মেমস 🔥</div>
   <div class="content-box" id="container">
     <p class="joke-text">লোড হচ্ছে...</p>
   </div>
-  <button class="btn" id="next-btn" onclick="nextContent()">পরেরটা ➡️</button>
+  <button class="btn" id="next-btn" onclick="nextContent()">পরেরটা দেখুন ➡️</button>
 </div>
 
 <script>
@@ -83,11 +90,10 @@
     const btn = document.getElementById('next-btn');
     
     btn.disabled = true;
-    container.innerHTML = '<p class="joke-text">নতুন কন্টেন্ট লোড হচ্ছে...</p>';
+    container.innerHTML = '<p class="joke-text">নতুন কন্টেন্ট ফেচ করা হচ্ছে...</p>';
 
-    // ৮ সেকেন্ডের Fetch Timeout সেট করা হলো
     const controller = new AbortController();
-    const timeoutId = setTimeout(() => controller.abort(), 8000);
+    const timeoutId = setTimeout(() => controller.abort(), 9000);
 
     try {
       const response = await fetch('/api/joke', { signal: controller.signal });
@@ -103,7 +109,7 @@
         img.src = data.url;
         img.className = 'media';
         
-        // ছবি বা GIF লোড না হতে পারলে অটোমেটিক স্কিপ
+        // ইমেজ বা GIF লোড না হলে পরবর্তী API ট্রাই করবে
         img.onerror = () => {
           isFetching = false;
           btn.disabled = false;
@@ -120,8 +126,10 @@
         container.appendChild(p);
       }
     } catch (err) {
-      // এরর হলেও ফলব্যাক মেসেজ দিয়ে স্ক্রিন আনস্টাক করা হবে
-      container.innerHTML = '<p class="joke-text">😊 "প্রোগ্রামাররা কেন ডার্ক মোড ব্যবহার করে?\n\n🤣 কারণ আলোতে অনেক বাগ চলে আসে!"</p>';
+      // ব্যাকএন্ড বা নেটওয়ার্ক ডাউনে স্ক্রিন স্টাক না রেখে সাথে সাথে নতুন রিকোয়েস্ট পাঠাবে
+      isFetching = false;
+      btn.disabled = false;
+      setTimeout(nextContent, 1000);
     } finally {
       isFetching = false;
       btn.disabled = false;
