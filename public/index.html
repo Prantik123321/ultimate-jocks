@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>আনলিমিটেড জোকস ও মেমস</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: Arial, sans-serif;
+      background: #1e1e2e;
+      color: #fff;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      padding: 15px;
+    }
+    .card {
+      background: #2b2b3d;
+      width: 100%;
+      max-width: 420px;
+      padding: 20px;
+      border-radius: 16px;
+      text-align: center;
+      box-shadow: 0 8px 20px rgba(0,0,0,0.4);
+    }
+    .content-box {
+      min-height: 250px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      margin: 15px 0;
+    }
+    .media {
+      max-width: 100%;
+      max-height: 280px;
+      border-radius: 10px;
+      margin-bottom: 10px;
+    }
+    .joke-text {
+      font-size: 17px;
+      line-height: 1.5;
+      white-space: pre-line;
+    }
+    .btn {
+      background: #ff5252;
+      color: white;
+      border: none;
+      padding: 12px 25px;
+      font-size: 16px;
+      font-weight: bold;
+      border-radius: 25px;
+      cursor: pointer;
+      width: 100%;
+    }
+    .btn:hover { background: #ff7979; }
+  </style>
+</head>
+<body>
+
+<div class="card">
+  <h2>🔥 আনলিমিটেড ফান 🔥</h2>
+  <div class="content-box" id="container">
+    <p class="joke-text">অপেক্ষা করুন, লোড হচ্ছে...</p>
+  </div>
+  <button class="btn" onclick="nextContent()">পরেরটা ➡️</button>
+</div>
+
+<script>
+  async function nextContent() {
+    const container = document.getElementById('container');
+    container.innerHTML = '<p class="joke-text">নতুন কন্টেন্ট লোড হচ্ছে...</p>';
+
+    try {
+      const response = await fetch('/api/joke');
+      const data = await response.json();
+
+      container.innerHTML = '';
+
+      if (data.type === 'image') {
+        const img = document.createElement('img');
+        img.src = data.url;
+        img.className = 'media';
+        container.appendChild(img);
+      }
+
+      if (data.text || data.content) {
+        const p = document.createElement('p');
+        p.className = 'joke-text';
+        p.innerText = data.text || data.content;
+        container.appendChild(p);
+      }
+    } catch (err) {
+      container.innerHTML = '<p class="joke-text">কন্টেন্ট পেতে সমস্যা হয়েছে। আবার চেষ্টা করুন!</p>';
+    }
+  }
+
+  nextContent();
+</script>
+
+</body>
+</html>
