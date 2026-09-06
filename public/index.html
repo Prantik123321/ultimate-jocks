@@ -1,609 +1,318 @@
-```html
 <!DOCTYPE html>
 <html lang="bn">
-
 <head>
     <meta charset="UTF-8">
-
-    <meta
-        name="viewport"
-        content="width=device-width, initial-scale=1.0"
-    >
-
-    <title>হাসি-মজা ∞</title>
-
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>হাসি-মজা ∞ মেম</title>
     <style>
-
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
         }
-
         body {
+            background: #0b0e14;
             min-height: 100vh;
-
             display: flex;
             align-items: center;
             justify-content: center;
-
-            padding: 20px;
-
-            background:
-                radial-gradient(
-                    circle at top,
-                    #20283a,
-                    #090c12 65%
-                );
-
-            color: #fff;
-
-            font-family:
-                system-ui,
-                -apple-system,
-                BlinkMacSystemFont,
-                "Segoe UI",
-                sans-serif;
+            font-family: system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif;
+            padding: 1rem;
+            color: #f0f3fa;
         }
-
         .card {
+            max-width: 720px;
             width: 100%;
-            max-width: 760px;
-
-            background: rgba(24, 29, 40, 0.95);
-
-            border: 1px solid #30394b;
-
-            border-radius: 30px;
-
-            padding: 28px;
-
-            box-shadow:
-                0 25px 70px rgba(0,0,0,.65);
+            background: #1a1f2b;
+            border-radius: 2.5rem;
+            padding: 2rem 1.8rem 2.2rem;
+            box-shadow: 0 20px 40px -12px rgba(0,0,0,0.8), 0 0 0 1px #2c3342 inset;
+            transition: all 0.2s;
+            backdrop-filter: blur(2px);
         }
-
         h1 {
-            text-align: center;
-
-            font-size: 32px;
-
-            margin-bottom: 22px;
+            font-size: 1.9rem;
+            font-weight: 600;
+            letter-spacing: -0.5px;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-bottom: 1.2rem;
+            color: #eaeef6;
+            border-bottom: 1px solid #2f3748;
+            padding-bottom: 0.7rem;
         }
-
         h1 span {
-            font-size: 15px;
-
-            padding: 5px 12px;
-
-            border-radius: 20px;
-
-            background: #303a50;
-
-            color: #aebee0;
+            background: #2f3b4f;
+            padding: 0.1rem 0.8rem;
+            border-radius: 40px;
+            font-size: 1rem;
+            font-weight: 400;
+            color: #b9c8e6;
+            margin-left: 0.2rem;
         }
-
         .content-box {
-
-            min-height: 360px;
-
+            background: #10141e;
+            border-radius: 2rem;
+            padding: 1.8rem 1.5rem;
+            min-height: 280px;
             display: flex;
-
+            flex-direction: column;
             align-items: center;
             justify-content: center;
-
-            padding: 20px;
-
-            background: #0d1119;
-
-            border-radius: 25px;
-
-            border: 1px solid #293143;
-
-            margin-bottom: 20px;
+            border: 1px solid #29303f;
+            box-shadow: inset 0 6px 12px rgba(0,0,0,0.5);
+            transition: 0.15s;
+            margin-bottom: 1.8rem;
         }
-
-        #mainContent {
+        #contentDisplay {
             width: 100%;
-
-            display: flex;
-
-            align-items: center;
-
-            justify-content: center;
-        }
-
-        .joke-text {
-
-            width: 100%;
-
-            padding: 25px;
-
-            border-radius: 22px;
-
-            background: #1b2230;
-
-            border-left: 5px solid #6685c0;
-
-            font-size: 22px;
-
-            line-height: 1.65;
-
             text-align: center;
-        }
-
-        .joke-text strong {
-            display: block;
-
-            margin-bottom: 14px;
-        }
-
-        .delivery {
-            color: #b9c9ec;
-        }
-
-        .source {
-            display: block;
-
-            margin-top: 18px;
-
-            padding-top: 12px;
-
-            border-top: 1px dashed #39445a;
-
-            font-size: 13px;
-
-            color: #7483a0;
-        }
-
-        .media {
-
-            max-width: 100%;
-
-            max-height: 420px;
-
-            display: block;
-
-            margin: auto;
-
-            border-radius: 20px;
-
-            object-fit: contain;
-
-            background: #080b11;
-
-            box-shadow:
-                0 10px 35px rgba(0,0,0,.6);
-        }
-
-        .actions {
-
             display: flex;
-
-            gap: 12px;
-
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 0.8rem;
+        }
+        #contentDisplay img {
+            max-width: 100%;
+            max-height: 340px;
+            border-radius: 20px;
+            object-fit: contain;
+            background: #0d111a;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.6);
+            border: 1px solid #2f384b;
+        }
+        .joke-text {
+            font-size: 1.4rem;
+            line-height: 1.6;
+            word-break: break-word;
+            color: #eef3fe;
+            background: #1b212e;
+            padding: 1rem 1.2rem;
+            border-radius: 28px;
+            width: 100%;
+            border-left: 4px solid #5d7bb0;
+            box-shadow: 0 2px 0 #2d3548;
+        }
+        .joke-text small {
+            display: block;
+            margin-top: 0.5rem;
+            font-size: 1rem;
+            color: #96a9cf;
+            border-top: 1px dashed #2f3b4f;
+            padding-top: 0.5rem;
+        }
+        .status-tip {
+            color: #7c8bb0;
+            font-size: 0.95rem;
+            background: #1b212e;
+            padding: 0.4rem 1.2rem;
+            border-radius: 30px;
+            display: inline-block;
+            border: 1px solid #2f384b;
+        }
+        .actions {
+            display: flex;
             flex-wrap: wrap;
-
+            align-items: center;
+            justify-content: center;
+            gap: 1rem;
+            margin-top: 0.6rem;
+        }
+        .btn {
+            background: #29334a;
+            border: none;
+            color: white;
+            font-weight: 600;
+            font-size: 1.2rem;
+            padding: 0.8rem 2rem;
+            border-radius: 60px;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.6rem;
+            cursor: pointer;
+            transition: 0.15s;
+            box-shadow: 0 4px 0 #0d111a, 0 6px 12px rgba(0,0,0,0.4);
+            border: 1px solid #3e4a63;
+            flex: 1 1 auto;
             justify-content: center;
         }
-
-        button {
-
-            border: 1px solid #465777;
-
-            background: #30405f;
-
-            color: white;
-
-            padding: 14px 22px;
-
-            border-radius: 50px;
-
-            font-size: 16px;
-
-            font-weight: 700;
-
-            cursor: pointer;
-
-            transition: .15s;
+        .btn:active {
+            transform: translateY(3px);
+            box-shadow: 0 1px 0 #0d111a;
         }
-
-        button:hover {
-            transform: translateY(-2px);
-            background: #3b4e74;
-        }
-
-        button:active {
+        .btn:disabled {
+            opacity: 0.5;
             transform: translateY(2px);
-        }
-
-        button:disabled {
-            opacity: .45;
+            box-shadow: 0 2px 0 #0d111a;
             pointer-events: none;
         }
-
-        .loader {
-
-            width: 45px;
-            height: 45px;
-
-            border-radius: 50%;
-
-            border: 4px solid #2c3547;
-
-            border-top-color: #829ee0;
-
-            animation:
-                spin .8s linear infinite;
+        .btn-primary {
+            background: #3d5a8c;
+            border-color: #5f7db8;
+            color: white;
         }
-
-        @keyframes spin {
-
-            to {
-                transform: rotate(360deg);
-            }
-
+        .btn-secondary {
+            background: #2e384e;
+            border-color: #475571;
         }
-
-        .hidden {
-            display: none !important;
-        }
-
-        .footer {
-
+        .footer-note {
             text-align: center;
-
-            margin-top: 18px;
-
-            color: #65728b;
-
-            font-size: 13px;
+            margin-top: 1.5rem;
+            font-size: 0.8rem;
+            color: #5d6e8f;
+            border-top: 1px solid #222b3c;
+            padding-top: 1rem;
+            letter-spacing: 0.3px;
         }
-
-        @media (max-width: 600px) {
-
-            .card {
-                padding: 18px;
-                border-radius: 22px;
-            }
-
-            h1 {
-                font-size: 25px;
-            }
-
-            .joke-text {
-                font-size: 18px;
-                padding: 20px;
-            }
-
-            .content-box {
-                min-height: 300px;
-            }
-
+        .loader {
+            display: inline-block;
+            width: 40px;
+            height: 40px;
+            border: 4px solid #2f384b;
+            border-top: 4px solid #7b9be0;
+            border-radius: 50%;
+            animation: spin 0.9s linear infinite;
+            margin: 1rem 0;
         }
-
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+        .hidden { display: none !important; }
     </style>
 </head>
-
 <body>
-
 <div class="card">
-
-    <h1>
-        🎭 হাসি-মজা
-        <span>∞ AUTO</span>
-    </h1>
-
+    <h1>🎭 হাসি-মজা ∞ <span>মেম</span></h1>
     <div class="content-box">
-
-        <div id="loader" class="loader"></div>
-
-        <div
-            id="mainContent"
-            class="hidden"
-        ></div>
-
+        <div id="contentDisplay">
+            <div id="loadingPlaceholder" class="loader"></div>
+            <div id="mainContent" class="hidden"></div>
+        </div>
     </div>
-
     <div class="actions">
-
-        <button
-            id="nextBtn"
-        >
-            ⟳ পরেরটা
-        </button>
-
-        <button
-            id="jokeBtn"
-        >
-            😂 Joke
-        </button>
-
-        <button
-            id="memeBtn"
-        >
-            🖼️ Meme
-        </button>
-
-        <button
-            id="gifBtn"
-        >
-            🎬 GIF
-        </button>
-
+        <button class="btn btn-primary" id="nextBtn">⟳ পরেরটা দেখুন ➡️</button>
     </div>
-
-    <div class="footer">
-        🌐 Multiple APIs • Automatic content • Duplicate protection
-    </div>
-
+    <div class="footer-note">🔮 প্রতিটি ক্লিকে নতুন মেম / জোক • ৮০% বাংলা</div>
 </div>
-
 <script>
+    (function() {
+        const mainContent = document.getElementById('mainContent');
+        const loadingPlaceholder = document.getElementById('loadingPlaceholder');
+        const nextBtn = document.getElementById('nextBtn');
 
-(function () {
+        let isFetching = false;
 
-    const loader =
-        document.getElementById("loader");
-
-    const mainContent =
-        document.getElementById("mainContent");
-
-    const nextBtn =
-        document.getElementById("nextBtn");
-
-    const jokeBtn =
-        document.getElementById("jokeBtn");
-
-    const memeBtn =
-        document.getElementById("memeBtn");
-
-    const gifBtn =
-        document.getElementById("gifBtn");
-
-    let loading = false;
-
-    function setLoading(value) {
-
-        loading = value;
-
-        if (value) {
-
-            loader.classList.remove("hidden");
-
-            mainContent.classList.add("hidden");
-
-            mainContent.innerHTML = "";
-
-            nextBtn.disabled = true;
-            jokeBtn.disabled = true;
-            memeBtn.disabled = true;
-            gifBtn.disabled = true;
-
-        } else {
-
-            loader.classList.add("hidden");
-
-            mainContent.classList.remove("hidden");
-
-            nextBtn.disabled = false;
-            jokeBtn.disabled = false;
-            memeBtn.disabled = false;
-            gifBtn.disabled = false;
-        }
-    }
-
-    function escapeHTML(text) {
-
-        const div =
-            document.createElement("div");
-
-        div.textContent =
-            String(text || "");
-
-        return div.innerHTML;
-    }
-
-    function render(data) {
-
-        mainContent.innerHTML = "";
-
-        if (!data) {
-
-            mainContent.innerHTML =
-                `<div class="joke-text">
-                    😵 কিছু পাওয়া যায়নি।
-                </div>`;
-
-            return;
-        }
-
-        /* IMAGE / GIF */
-
-        if (data.type === "image") {
-
-            const img =
-                document.createElement("img");
-
-            img.className = "media";
-
-            img.src = data.content;
-
-            img.alt = "Meme";
-
-            img.loading = "eager";
-
-            img.onerror = function () {
-
-                loadContent("all", true);
-
-            };
-
-            mainContent.appendChild(img);
-
-            return;
-        }
-
-        /* TEXT */
-
-        if (data.type === "text") {
-
-            const box =
-                document.createElement("div");
-
-            box.className = "joke-text";
-
-            const content =
-                data.content;
-
-            if (
-                typeof content === "object" &&
-                content !== null
-            ) {
-
-                const setup =
-                    escapeHTML(content.setup);
-
-                const delivery =
-                    escapeHTML(content.delivery);
-
-                box.innerHTML = `
-                    <strong>${setup}</strong>
-
-                    <div class="delivery">
-                        ${delivery}
-                    </div>
-                `;
-
+        function setLoading(state) {
+            if (state) {
+                loadingPlaceholder.classList.remove('hidden');
+                mainContent.classList.add('hidden');
+                mainContent.innerHTML = '';
+                nextBtn.disabled = true;
             } else {
-
-                box.textContent =
-                    String(content || "😂");
+                loadingPlaceholder.classList.add('hidden');
+                mainContent.classList.remove('hidden');
+                nextBtn.disabled = false;
             }
-
-            if (data.meta?.source) {
-
-                const source =
-                    document.createElement("small");
-
-                source.className = "source";
-
-                source.textContent =
-                    `✦ Source: ${data.meta.source}`;
-
-                box.appendChild(source);
-            }
-
-            mainContent.appendChild(box);
-
-            return;
+            isFetching = state;
         }
 
-        mainContent.innerHTML =
-            `<div class="joke-text">
-                😵 Unknown content
-            </div>`;
-    }
+        function renderContent(data) {
+            mainContent.innerHTML = '';
+            if (!data) {
+                mainContent.innerHTML = '<div class="joke-text">😵 কিছু পাওয়া যায়নি। আবার চেষ্টা করুন</div>';
+                return;
+            }
 
-    async function loadContent(
-        mode = "all",
-        silent = false
-    ) {
-
-        if (loading && !silent) {
-            return;
+            if (data.type === 'image') {
+                const img = document.createElement('img');
+                img.src = data.content;
+                img.alt = 'মেম';
+                img.loading = 'lazy';
+                img.onerror = function() {
+                    console.warn('img failed, fetching next');
+                    fetchNextContent(true);
+                };
+                mainContent.appendChild(img);
+            } else if (data.type === 'text') {
+                const div = document.createElement('div');
+                div.className = 'joke-text';
+                if (data.content.setup && data.content.delivery) {
+                    div.innerHTML = `<strong>${data.content.setup}</strong><br><span style="color:#b8caf0;">${data.content.delivery}</span>`;
+                } else if (data.content.joke || data.content.value) {
+                    div.textContent = data.content.joke || data.content.value || '😄';
+                } else if (typeof data.content === 'string') {
+                    div.textContent = data.content;
+                } else {
+                    div.textContent = '😆 মজার কিছু!';
+                }
+                const small = document.createElement('small');
+                small.textContent = '✦ মজা নিন';
+                div.appendChild(small);
+                mainContent.appendChild(div);
+            } else {
+                mainContent.innerHTML = '<div class="joke-text">✨ কিছু ভুল হয়েছে, আবার চেষ্টা করুন</div>';
+            }
         }
 
-        if (!silent) {
+        async function fetchNextContent(silentFail = false) {
+            if (isFetching) return;
             setLoading(true);
-        }
 
-        try {
+            const controller = new AbortController();
+            const timeoutId = setTimeout(() => controller.abort(), 8000);
 
-            const url =
-                mode === "all"
-                    ? "/api/joke"
-                    : `/api/joke?mode=${encodeURIComponent(mode)}`;
-
-            const response =
-                await fetch(url, {
-                    headers: {
-                        Accept:
-                            "application/json"
-                    },
-                    cache: "no-store"
+            try {
+                const response = await fetch('/api/joke', {
+                    signal: controller.signal,
+                    headers: { 'Accept': 'application/json' }
                 });
+                clearTimeout(timeoutId);
 
-            if (!response.ok) {
-                throw new Error(
-                    `HTTP ${response.status}`
-                );
-            }
-
-            const data =
-                await response.json();
-
-            if (!data?.type) {
-                throw new Error(
-                    "Invalid API response"
-                );
-            }
-
-            render(data);
-
-        } catch (error) {
-
-            console.error(error);
-
-            mainContent.classList.remove(
-                "hidden"
-            );
-
-            mainContent.innerHTML =
-                `<div class="joke-text">
-                    😵 Content পাওয়া যাচ্ছে না।
-                    <br>
-                    <small>
-                        আবার চেষ্টা করো।
-                    </small>
-                </div>`;
-
-        } finally {
-
-            if (!silent) {
+                if (!response.ok) {
+                    throw new Error(`HTTP ${response.status}`);
+                }
+                const json = await response.json();
+                if (json && json.type) {
+                    renderContent(json);
+                } else {
+                    throw new Error('invalid response');
+                }
+            } catch (err) {
+                clearTimeout(timeoutId);
+                console.warn('Fetch error:', err);
+                if (!silentFail) {
+                    mainContent.innerHTML = `<div class="joke-text">⏳ নেটওয়ার্ক সমস্যা। আবার চেষ্টা করুন</div>`;
+                    mainContent.classList.remove('hidden');
+                    loadingPlaceholder.classList.add('hidden');
+                } else {
+                    try {
+                        const retryResp = await fetch('/api/joke', { headers: { 'Accept': 'application/json' } });
+                        if (retryResp.ok) {
+                            const retryJson = await retryResp.json();
+                            if (retryJson && retryJson.type) {
+                                renderContent(retryJson);
+                                setLoading(false);
+                                return;
+                            }
+                        }
+                    } catch (_) {}
+                    mainContent.innerHTML = `<div class="joke-text">⚠️ মেম লোড হয়নি, বাটনে ক্লিক করুন</div>`;
+                    mainContent.classList.remove('hidden');
+                    loadingPlaceholder.classList.add('hidden');
+                }
+            } finally {
                 setLoading(false);
             }
         }
-    }
 
-    window.addEventListener(
-        "load",
-        () => loadContent("all")
-    );
+        window.addEventListener('load', () => {
+            fetchNextContent(false);
+        });
 
-    nextBtn.addEventListener(
-        "click",
-        () => loadContent("all")
-    );
-
-    jokeBtn.addEventListener(
-        "click",
-        () => loadContent("joke")
-    );
-
-    memeBtn.addEventListener(
-        "click",
-        () => loadContent("meme")
-    );
-
-    gifBtn.addEventListener(
-        "click",
-        () => loadContent("gif")
-    );
-
-})();
-
+        nextBtn.addEventListener('click', () => {
+            fetchNextContent(false);
+        });
+    })();
 </script>
-
 </body>
 </html>
-```
