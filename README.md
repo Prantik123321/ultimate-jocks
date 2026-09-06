@@ -1,20 +1,21 @@
 # 🎭 হাসি-মজা ∞ মেম - Unlimited Jokes & Memes
 
-A fully automated, database-free web application that fetches unlimited jokes and memes from 7+ external APIs with automatic Bangla translation (80% probability).
+একটি সম্পূর্ণ অটোমেটিক, ডেটাবেস-মুক্ত ওয়েব অ্যাপ্লিকেশন যা ৭+ এক্সটার্নাল এপিআই থেকে অসীম জোকস এবং মেম ফেচ করে। ৮০% সম্ভাবনায় বাংলায় অনুবাদ করা হয়।
 
-## Features
-- **7 Dynamic API Sources**: Reddit, Giphy, Official Joke API, JokeAPI v2, Programming Joke API, Tech Joke API, Meme-API
-- **Auto-Translation**: 80% chance to translate English content to Bangla using Google Translate
-- **Fail-Safe Logic**: Automatically shuffles and falls back to next API if one fails
-- **Dark Mode UI**: Modern, responsive, and user-friendly interface
-- **Zero Database**: 100% API-driven content
+## নতুন ফিচারসমূহ
+- ✅ **সুপার মজার জোকস**: Official Joke API, Dad Jokes, এবং JokeAPI থেকে বাছাই করা হাস্যকর জোকস
+- ✅ **বাংলা অনুবাদ**: ৮০% চান্সে ইংরেজি কন্টেন্ট বাংলায় অনুবাদ হয়
+- ✅ **৭+ ডায়নামিক সোর্স**: Reddit, Giphy, Official Joke API, JokeAPI v2, Dad Jokes, Programming Jokes, Meme-API
+- ✅ **ফেল-সেফ লজিক**: কোনো এপিআই ফেল করলে পরবর্তী সোর্সে সুইচ করে
+- ✅ **ডার্ক মোড ইউআই**: মডার্ন, রেস্পন্সিভ এবং ইউজার-ফ্রেন্ডলি ইন্টারফেস
+- ✅ **জিরো ডেটাবেস**: ১০০% এপিআই-ড্রাইভেন কন্টেন্ট
 
-## Deployment on Vercel
-1. Clone this repository
-2. Run `npm install`
-3. Deploy to Vercel using the Vercel CLI or GitHub integration
+## ভার্সেলে ডিপ্লয়
+1. এই রিপোজিটরি ক্লোন করুন
+2. `npm install` রান করুন
+3. Vercel CLI বা GitHub ইন্টিগ্রেশন ব্যবহার করে ডিপ্লয় করুন
 
-## Local Development
+## লোকাল ডেভেলপমেন্ট
 ```bash
 npm install
 npm run dev
