@@ -1,25 +1,20 @@
 ```json
 {
-  "name": "hasimaja-auto",
+  "name": "ultimate-jocks",
   "version": "1.0.0",
   "private": true,
-
-  "description": "Automatic joke, meme and GIF aggregator",
-
+  "description": "Automatic jokes, memes and GIF website",
   "main": "api/index.js",
-
   "scripts": {
     "start": "node api/index.js"
   },
-
   "engines": {
-    "node": ">=18"
+    "node": "24.x"
   },
-
   "dependencies": {
-    "axios": "^1.7.9",
+    "axios": "^1.11.0",
     "cors": "^2.8.5",
-    "express": "^4.21.2"
+    "express": "^5.1.0"
   }
 }
 ```
