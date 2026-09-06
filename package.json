@@ -1,9 +1,7 @@
-```json
 {
   "name": "ultimate-jocks",
   "version": "1.0.0",
   "private": true,
-  "description": "Automatic jokes, memes and GIF website",
   "main": "api/index.js",
   "scripts": {
     "start": "node api/index.js"
@@ -17,4 +15,3 @@
     "express": "^5.1.0"
   }
 }
-```
