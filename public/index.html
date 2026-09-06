@@ -59,6 +59,7 @@
       transition: background 0.2s;
     }
     .btn:hover { background: #ff7979; }
+    .btn:disabled { background: #7f8c8d; cursor: not-allowed; }
   </style>
 </head>
 <body>
@@ -66,20 +67,35 @@
 <div class="card">
   <h2>🔥 আনলিমিটেড ফান 🔥</h2>
   <div class="content-box" id="container">
-    <p class="joke-text">অপেক্ষা করুন, লোড হচ্ছে...</p>
+    <p class="joke-text">লোড হচ্ছে...</p>
   </div>
-  <button class="btn" onclick="nextContent()">পরেরটা ➡️</button>
+  <button class="btn" id="next-btn" onclick="nextContent()">পরেরটা ➡️</button>
 </div>
 
 <script>
+  let isFetching = false;
+
   async function nextContent() {
+    if (isFetching) return;
+    isFetching = true;
+
     const container = document.getElementById('container');
+    const btn = document.getElementById('next-btn');
+    
+    btn.disabled = true;
     container.innerHTML = '<p class="joke-text">নতুন কন্টেন্ট লোড হচ্ছে...</p>';
 
-    try {
-      const response = await fetch('/api/joke');
-      const data = await response.json();
+    // ৮ সেকেন্ডের Fetch Timeout সেট করা হলো
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), 8000);
 
+    try {
+      const response = await fetch('/api/joke', { signal: controller.signal });
+      clearTimeout(timeoutId);
+
+      if (!response.ok) throw new Error('API Error');
+
+      const data = await response.json();
       container.innerHTML = '';
 
       if (data.type === 'image' && data.url) {
@@ -87,8 +103,12 @@
         img.src = data.url;
         img.className = 'media';
         
-        // ইমেজ লিংক নষ্ট থাকলে স্বয়ংক্রিয়ভাবে পরের জোক লোড হবে
-        img.onerror = () => nextContent();
+        // ছবি বা GIF লোড না হতে পারলে অটোমেটিক স্কিপ
+        img.onerror = () => {
+          isFetching = false;
+          btn.disabled = false;
+          nextContent();
+        };
 
         container.appendChild(img);
       }
@@ -100,8 +120,11 @@
         container.appendChild(p);
       }
     } catch (err) {
-      // ব্যাকএন্ড ফেল করলেও অটোমেটিক রিকভার করার চেষ্টা করবে
-      setTimeout(nextContent, 1000);
+      // এরর হলেও ফলব্যাক মেসেজ দিয়ে স্ক্রিন আনস্টাক করা হবে
+      container.innerHTML = '<p class="joke-text">😊 "প্রোগ্রামাররা কেন ডার্ক মোড ব্যবহার করে?\n\n🤣 কারণ আলোতে অনেক বাগ চলে আসে!"</p>';
+    } finally {
+      isFetching = false;
+      btn.disabled = false;
     }
   }
 
