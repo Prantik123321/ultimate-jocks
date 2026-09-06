@@ -85,23 +85,39 @@
         }
         .joke-text {
             font-size: 1.4rem;
-            line-height: 1.6;
+            line-height: 1.8;
             word-break: break-word;
             color: #eef3fe;
             background: #1b212e;
-            padding: 1rem 1.2rem;
+            padding: 1.2rem 1.5rem;
             border-radius: 28px;
             width: 100%;
             border-left: 4px solid #5d7bb0;
             box-shadow: 0 2px 0 #2d3548;
+            text-align: left;
+        }
+        .joke-text strong {
+            color: #ffd966;
+            display: block;
+            margin-bottom: 0.5rem;
+            font-size: 1.5rem;
+        }
+        .joke-text .delivery {
+            color: #b8caf0;
+            font-size: 1.3rem;
+            display: block;
+            margin-top: 0.5rem;
+            padding-top: 0.5rem;
+            border-top: 2px dashed #2f3b4f;
         }
         .joke-text small {
             display: block;
-            margin-top: 0.5rem;
-            font-size: 1rem;
+            margin-top: 0.8rem;
+            font-size: 0.9rem;
             color: #96a9cf;
             border-top: 1px dashed #2f3b4f;
             padding-top: 0.5rem;
+            text-align: center;
         }
         .status-tip {
             color: #7c8bb0;
@@ -153,6 +169,9 @@
             border-color: #5f7db8;
             color: white;
         }
+        .btn-primary:hover {
+            background: #4d6aa8;
+        }
         .btn-secondary {
             background: #2e384e;
             border-color: #475571;
@@ -178,6 +197,11 @@
         }
         @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
         .hidden { display: none !important; }
+        .emoji-big {
+            font-size: 4rem;
+            display: block;
+            margin: 0.5rem 0;
+        }
     </style>
 </head>
 <body>
@@ -236,18 +260,29 @@
             } else if (data.type === 'text') {
                 const div = document.createElement('div');
                 div.className = 'joke-text';
+                
                 if (data.content.setup && data.content.delivery) {
-                    div.innerHTML = `<strong>${data.content.setup}</strong><br><span style="color:#b8caf0;">${data.content.delivery}</span>`;
+                    div.innerHTML = `
+                        <strong>${data.content.setup}</strong>
+                        <span class="delivery">${data.content.delivery}</span>
+                        <small>✦ মজা নিন</small>
+                    `;
                 } else if (data.content.joke || data.content.value) {
-                    div.textContent = data.content.joke || data.content.value || '😄';
+                    div.innerHTML = `
+                        <span>${data.content.joke || data.content.value}</span>
+                        <small>✦ মজা নিন</small>
+                    `;
                 } else if (typeof data.content === 'string') {
-                    div.textContent = data.content;
+                    div.innerHTML = `
+                        <span>${data.content}</span>
+                        <small>✦ মজা নিন</small>
+                    `;
                 } else {
-                    div.textContent = '😆 মজার কিছু!';
+                    div.innerHTML = `
+                        <span>😆 মজার কিছু!</span>
+                        <small>✦ মজা নিন</small>
+                    `;
                 }
-                const small = document.createElement('small');
-                small.textContent = '✦ মজা নিন';
-                div.appendChild(small);
                 mainContent.appendChild(div);
             } else {
                 mainContent.innerHTML = '<div class="joke-text">✨ কিছু ভুল হয়েছে, আবার চেষ্টা করুন</div>';
