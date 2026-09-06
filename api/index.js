@@ -30,11 +30,11 @@ async function translateToBangla(text) {
     }
 }
 
-// API Sources
+// Enhanced API Sources with better jokes
 const sources = [
     // Reddit Memes
     async () => {
-        const subreddits = ['bangladesh_meme', 'dankmemes', 'memes'];
+        const subreddits = ['funny', 'dankmemes', 'memes', 'jokes', 'bangladesh_meme'];
         const sub = subreddits[Math.floor(Math.random() * subreddits.length)];
         const response = await axios.get(`https://www.reddit.com/r/${sub}/random.json`, {
             headers: { 'User-Agent': 'Mozilla/5.0 (compatible; MemeApp/1.0)' },
@@ -46,13 +46,13 @@ const sources = [
         }
         throw new Error('No image found');
     },
-    // Giphy
+    // Giphy with funny tags
     async () => {
-        const tags = ['funny', 'meme', 'lol', 'hilarious', 'comedy', 'joke'];
+        const tags = ['funny', 'hilarious', 'lol', 'comedy', 'joke', 'crazy', 'silly', 'fail'];
         const tag = tags[Math.floor(Math.random() * tags.length)];
         const response = await axios.get('https://api.giphy.com/v1/gifs/random', {
             params: {
-                api_key: 'dc6zaTOxFJmzC', // public key
+                api_key: 'dc6zaTOxFJmzC',
                 tag: tag,
                 rating: 'g'
             },
@@ -62,7 +62,7 @@ const sources = [
         if (url) return { type: 'image', content: url };
         throw new Error('No GIF found');
     },
-    // Official Joke API
+    // Official Joke API - Best jokes
     async () => {
         const response = await axios.get('https://official-joke-api.appspot.com/random_joke', {
             timeout: 4000
@@ -75,12 +75,16 @@ const sources = [
         }
         throw new Error('No joke found');
     },
-    // JokeAPI v2
+    // JokeAPI v2 - Multiple categories
     async () => {
         const categories = ['Programming', 'Misc', 'Dark', 'Pun', 'Spooky', 'Christmas'];
         const category = categories[Math.floor(Math.random() * categories.length)];
         const response = await axios.get('https://v2.jokeapi.dev/joke/' + category, {
-            params: { format: 'json', type: 'twopart' },
+            params: { 
+                format: 'json', 
+                type: 'twopart',
+                safe: 'true'
+            },
             timeout: 4000
         });
         const joke = response.data;
@@ -91,20 +95,7 @@ const sources = [
         }
         throw new Error('No joke found');
     },
-    // Programming Joke API
-    async () => {
-        const response = await axios.get('https://programming-jokes.com/api/v1/jokes/random', {
-            timeout: 4000
-        });
-        const joke = response.data;
-        if (joke.question && joke.answer) {
-            const question = await translateToBangla(joke.question);
-            const answer = await translateToBangla(joke.answer);
-            return { type: 'text', content: { setup: question, delivery: answer } };
-        }
-        throw new Error('No joke found');
-    },
-    // Tech Joke API (using icanhazdadjoke as fallback)
+    // Dad Jokes - Super funny
     async () => {
         const response = await axios.get('https://icanhazdadjoke.com/', {
             headers: { 'Accept': 'application/json' },
@@ -117,7 +108,20 @@ const sources = [
         }
         throw new Error('No joke found');
     },
-    // Meme-API (meme-api.com)
+    // Programming Jokes
+    async () => {
+        const response = await axios.get('https://programming-jokes.com/api/v1/jokes/random', {
+            timeout: 4000
+        });
+        const joke = response.data;
+        if (joke.question && joke.answer) {
+            const question = await translateToBangla(joke.question);
+            const answer = await translateToBangla(joke.answer);
+            return { type: 'text', content: { setup: question, delivery: answer } };
+        }
+        throw new Error('No joke found');
+    },
+    // Meme-API
     async () => {
         const response = await axios.get('https://meme-api.com/gimme', {
             timeout: 4000
@@ -127,6 +131,24 @@ const sources = [
             return { type: 'image', content: meme.url };
         }
         throw new Error('No meme found');
+    },
+    // Extra: Random Joke API
+    async () => {
+        const response = await axios.get('https://v2.jokeapi.dev/joke/Any', {
+            params: { 
+                format: 'json',
+                type: 'twopart',
+                safe: 'true'
+            },
+            timeout: 4000
+        });
+        const joke = response.data;
+        if (joke.setup && joke.delivery) {
+            const setup = await translateToBangla(joke.setup);
+            const delivery = await translateToBangla(joke.delivery);
+            return { type: 'text', content: { setup, delivery } };
+        }
+        throw new Error('No joke found');
     }
 ];
 
