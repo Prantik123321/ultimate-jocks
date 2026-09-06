@@ -7,7 +7,7 @@
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; }
     body {
-      font-family: Arial, sans-serif;
+      font-family: 'Segoe UI', Arial, sans-serif;
       background: #1e1e2e;
       color: #fff;
       display: flex;
@@ -20,13 +20,13 @@
       background: #2b2b3d;
       width: 100%;
       max-width: 420px;
-      padding: 20px;
-      border-radius: 16px;
+      padding: 24px;
+      border-radius: 18px;
       text-align: center;
-      box-shadow: 0 8px 20px rgba(0,0,0,0.4);
+      box-shadow: 0 10px 25px rgba(0,0,0,0.5);
     }
     .content-box {
-      min-height: 250px;
+      min-height: 260px;
       display: flex;
       flex-direction: column;
       justify-content: center;
@@ -35,25 +35,28 @@
     }
     .media {
       max-width: 100%;
-      max-height: 280px;
-      border-radius: 10px;
-      margin-bottom: 10px;
+      max-height: 260px;
+      border-radius: 12px;
+      margin-bottom: 12px;
+      object-fit: contain;
     }
     .joke-text {
-      font-size: 17px;
+      font-size: 18px;
       line-height: 1.5;
       white-space: pre-line;
+      font-weight: 500;
     }
     .btn {
       background: #ff5252;
       color: white;
       border: none;
-      padding: 12px 25px;
-      font-size: 16px;
+      padding: 14px 25px;
+      font-size: 17px;
       font-weight: bold;
-      border-radius: 25px;
+      border-radius: 30px;
       cursor: pointer;
       width: 100%;
+      transition: background 0.2s;
     }
     .btn:hover { background: #ff7979; }
   </style>
@@ -79,10 +82,14 @@
 
       container.innerHTML = '';
 
-      if (data.type === 'image') {
+      if (data.type === 'image' && data.url) {
         const img = document.createElement('img');
         img.src = data.url;
         img.className = 'media';
+        
+        // ইমেজ লিংক নষ্ট থাকলে স্বয়ংক্রিয়ভাবে পরের জোক লোড হবে
+        img.onerror = () => nextContent();
+
         container.appendChild(img);
       }
 
@@ -93,7 +100,8 @@
         container.appendChild(p);
       }
     } catch (err) {
-      container.innerHTML = '<p class="joke-text">কন্টেন্ট পেতে সমস্যা হয়েছে। আবার চেষ্টা করুন!</p>';
+      // ব্যাকএন্ড ফেল করলেও অটোমেটিক রিকভার করার চেষ্টা করবে
+      setTimeout(nextContent, 1000);
     }
   }
 
