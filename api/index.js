@@ -7,17 +7,32 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
-// MongoDB connection (for storing user uploaded content)
-mongoose.connect('mongodb://localhost:27017/meme_db', {
-  useNewUrlParser: true,
-  useUnifiedTopology: true
+// ==== MongoDB Serverless Connection Caching ====
+const MONGO_URI = process.env.MONGO_URI || 'mongodb://localhost:27017/meme_db';
+let isConnected = false;
+
+async function connectToDatabase() {
+  if (isConnected) return;
+  try {
+    const db = await mongoose.connect(MONGO_URI);
+    isConnected = db.connections[0].readyState === 1;
+    console.log('✅ MongoDB Connected');
+  } catch (err) {
+    console.error('MongoDB Connection Error:', err.message);
+  }
+}
+
+// Middleware to ensure DB connection before handling requests
+app.use(async (req, res, next) => {
+  await connectToDatabase();
+  next();
 });
 
-// Content Schema for user submitted jokes/memes
+// Content Schema
 const ContentSchema = new mongoose.Schema({
   type: { type: String, enum: ['joke', 'meme', 'gif'], required: true },
-  content: String, // for text jokes
-  url: String, // for images/gifs
+  content: String,
+  url: String,
   title: String,
   category: String,
   isBangla: { type: Boolean, default: false },
@@ -26,21 +41,36 @@ const ContentSchema = new mongoose.Schema({
   createdAt: { type: Date, default: Date.now }
 });
 
-const Content = mongoose.model('Content', ContentSchema);
+const Content = mongoose.models.Content || mongoose.model('Content', ContentSchema);
 
-// ==== API FUNCTIONS (Dynamic & Unlimited) ====
+// ==== API FUNCTIONS ====
 
-// 1. DYNAMIC REDDIT API - Always fetches new memes
+// Helper: Translate to Bangla
+async function translateToBangla(text) {
+  try {
+    const response = await axios.get(
+      `https://translate.googleapis.com/translate_a/single?client=gtx&sl=en&tl=bn&dt=t&q=${encodeURIComponent(text)}`,
+      { timeout: 3000 }
+    );
+    return response.data[0][0][0];
+  } catch (error) {
+    return text;
+  }
+}
+
+// 1. DYNAMIC REDDIT API (Fixed User-Agent Header)
 async function getRedditMeme() {
   try {
     const subreddits = ['bangladesh_meme', 'bangladesh', 'bangla', 'dankmemes', 'memes'];
     const sub = subreddits[Math.floor(Math.random() * subreddits.length)];
     
-    // Fetch latest 50 memes from subreddit
-    const response = await axios.get(`https://www.reddit.com/r/${sub}/hot.json?limit=50`);
-    const posts = response.data.data.children;
+    // User-Agent added to prevent Reddit 429 Block
+    const response = await axios.get(`https://www.reddit.com/r/${sub}/hot.json?limit=50`, {
+      headers: { 'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) FunnyApp/1.0' },
+      timeout: 5000
+    });
     
-    // Filter valid image posts
+    const posts = response.data.data.children;
     const validPosts = posts.filter(post => {
       const url = post.data.url;
       return url && 
@@ -51,17 +81,12 @@ async function getRedditMeme() {
     
     if (validPosts.length === 0) throw new Error('No valid memes found');
     
-    // Pick random meme
     const randomPost = validPosts[Math.floor(Math.random() * validPosts.length)];
     const data = randomPost.data;
     
-    // Auto-translate if needed (for Bangla)
     let title = data.title;
     if (Math.random() < 0.8) {
-      try {
-        const translated = await translateToBangla(data.title);
-        title = translated;
-      } catch (e) {}
+      title = await translateToBangla(data.title);
     }
     
     return {
@@ -72,19 +97,20 @@ async function getRedditMeme() {
       subreddit: sub
     };
   } catch (error) {
-    console.error('Reddit fetch error:', error);
+    console.error('Reddit fetch error:', error.message);
     throw new Error('Reddit API failed');
   }
 }
 
-// 2. DYNAMIC GIPHY API - Unlimited GIFs
+// 2. DYNAMIC GIPHY API
 async function getGiphyGif() {
   try {
     const tags = ['funny', 'bangladesh', 'cricket', 'dance', 'laugh', 'comedy', 'reaction'];
     const tag = tags[Math.floor(Math.random() * tags.length)];
     
     const response = await axios.get(
-      `https://api.giphy.com/v1/gifs/random?api_key=cw9s9699vRO2i2wM31B29z6P4G6222UU&tag=${tag}`
+      `https://api.giphy.com/v1/gifs/random?api_key=cw9s9699vRO2i2wM31B29z6P4G6222UU&tag=${tag}`,
+      { timeout: 5000 }
     );
     
     const gifUrl = response?.data?.data?.images?.original?.url;
@@ -92,10 +118,7 @@ async function getGiphyGif() {
     
     let title = `😄 ${tag} GIF`;
     if (Math.random() < 0.8) {
-      try {
-        const translated = await translateToBangla(tag + ' GIF');
-        title = translated;
-      } catch (e) {}
+      title = await translateToBangla(tag + ' GIF');
     }
     
     return {
@@ -105,48 +128,32 @@ async function getGiphyGif() {
       source: 'giphy'
     };
   } catch (error) {
-    console.error('Giphy error:', error);
+    console.error('Giphy error:', error.message);
     throw new Error('Giphy API failed');
   }
 }
 
-// 3. DYNAMIC JOKE APIs - Multiple sources
+// 3. DYNAMIC JOKE APIs
 async function getDynamicJoke() {
   const jokeAPIs = [
-    // API 1: Official Joke API
     async () => {
-      const response = await axios.get('https://official-joke-api.appspot.com/random_joke');
-      const data = response.data;
-      return { setup: data.setup, punchline: data.punchline };
+      const response = await axios.get('https://official-joke-api.appspot.com/random_joke', { timeout: 4000 });
+      return { setup: response.data.setup, punchline: response.data.punchline };
     },
-    // API 2: JokeAPI (has Bangla jokes)
     async () => {
-      const response = await axios.get('https://v2.jokeapi.dev/joke/Any?lang=bn&type=twopart');
-      const data = response.data;
-      if (data.type === 'twopart') {
-        return { setup: data.setup, punchline: data.delivery };
-      }
-      throw new Error('Invalid joke format');
-    },
-    // API 3: Programming jokes
-    async () => {
-      const response = await axios.get('https://official-joke-api.appspot.com/jokes/programming/random');
+      const response = await axios.get('https://official-joke-api.appspot.com/jokes/programming/random', { timeout: 4000 });
       const data = response.data[0];
       return { setup: data.setup, punchline: data.punchline };
     }
   ];
   
-  // Try random joke API
   const api = jokeAPIs[Math.floor(Math.random() * jokeAPIs.length)];
   try {
     const joke = await api();
     
-    // 80% chance to translate to Bangla
     if (Math.random() < 0.8) {
-      try {
-        joke.setup = await translateToBangla(joke.setup);
-        joke.punchline = await translateToBangla(joke.punchline);
-      } catch (e) {}
+      joke.setup = await translateToBangla(joke.setup);
+      joke.punchline = await translateToBangla(joke.punchline);
     }
     
     return {
@@ -155,29 +162,16 @@ async function getDynamicJoke() {
       source: 'joke_api'
     };
   } catch (error) {
-    throw new Error('All joke APIs failed');
+    throw new Error('Joke APIs failed');
   }
 }
 
-// 4. BANGLA SPECIFIC JOKE API
+// 4. BANGLA SPECIFIC JOKE
 async function getBanglaJoke() {
   try {
-    // Try multiple Bangla joke sources
-    const sources = [
-      async () => {
-        const response = await axios.get('https://bangla-joke-api.vercel.app/api/random');
-        return response.data.joke || 'একটি মজার বাংলা জোক!';
-      },
-      async () => {
-        // Scrape from public Bangla joke sources (example)
-        const response = await axios.get('https://raw.githubusercontent.com/banglajokes/bangla-jokes/main/jokes.txt');
-        const jokes = response.data.split('\n').filter(j => j.trim());
-        return jokes[Math.floor(Math.random() * jokes.length)];
-      }
-    ];
-    
-    const source = sources[Math.floor(Math.random() * sources.length)];
-    const joke = await source();
+    const response = await axios.get('https://raw.githubusercontent.com/banglajokes/bangla-jokes/main/jokes.txt', { timeout: 4000 });
+    const jokes = response.data.split('\n').filter(j => j.trim().length > 10);
+    const joke = jokes[Math.floor(Math.random() * jokes.length)];
     
     return {
       type: 'text',
@@ -185,67 +179,27 @@ async function getBanglaJoke() {
       source: 'bangla_api'
     };
   } catch (error) {
-    console.error('Bangla joke error:', error);
-    // Fallback to dynamic English joke with translation
     return getDynamicJoke();
   }
 }
 
-// 5. USER GENERATED CONTENT (Stored in DB)
+// 5. USER GENERATED CONTENT
 async function getUserContent() {
   try {
-    // Fetch random from database
+    if (!isConnected) throw new Error('DB not connected');
     const count = await Content.countDocuments();
-    if (count === 0) {
-      // Add some initial jokes if DB is empty
-      await addInitialContent();
-      return getUserContent();
-    }
+    if (count === 0) throw new Error('No user content');
     
     const random = Math.floor(Math.random() * count);
     const content = await Content.findOne().skip(random).exec();
     
     if (content.type === 'joke') {
-      return {
-        type: 'text',
-        content: content.content,
-        source: 'user_db'
-      };
+      return { type: 'text', content: content.content, source: 'user_db' };
     } else {
-      return {
-        type: 'image',
-        url: content.url,
-        text: content.title || '😂 মজার মিম',
-        source: 'user_db'
-      };
+      return { type: 'image', url: content.url, text: content.title || '😂 মজার মিম', source: 'user_db' };
     }
   } catch (error) {
-    throw new Error('No user content found');
-  }
-}
-
-// Helper: Add initial content to DB
-async function addInitialContent() {
-  const initialJokes = [
-    { type: 'joke', content: 'কেন কম্পিউটার ঠান্ডা লাগে? কারণ তার অনেক ফ্যান আছে!' },
-    { type: 'joke', content: 'প্রোগ্রামার কেন বিয়ে করে না? কারণ সে ইতিমধ্যে অনেক বাগে আছে!' },
-    { type: 'joke', content: 'বাংলাদেশের সবচেয়ে বড় কোম্পানি কোনটা? "হাঁস-মুরগি পালন"!' }
-  ];
-  
-  for (const joke of initialJokes) {
-    await Content.create({ ...joke, isBangla: true });
-  }
-}
-
-// Helper: Translate to Bangla
-async function translateToBangla(text) {
-  try {
-    const response = await axios.get(
-      `https://translate.googleapis.com/translate_a/single?client=gtx&sl=en&tl=bn&dt=t&q=${encodeURIComponent(text)}`
-    );
-    return response.data[0][0][0];
-  } catch (error) {
-    return text;
+    throw new Error('User DB failed');
   }
 }
 
@@ -253,16 +207,14 @@ async function translateToBangla(text) {
 app.get('/api/joke', async (req, res) => {
   const random = Math.random();
   
-  // Array of possible content sources
   const contentSources = [
-    { weight: 0.30, fn: getRedditMeme },    // 30% Reddit memes
-    { weight: 0.20, fn: getGiphyGif },       // 20% GIFs
-    { weight: 0.20, fn: getDynamicJoke },    // 20% Dynamic jokes
-    { weight: 0.15, fn: getBanglaJoke },     // 15% Pure Bangla jokes
-    { weight: 0.15, fn: getUserContent }     // 15% User submitted
+    { weight: 0.35, fn: getRedditMeme },
+    { weight: 0.25, fn: getGiphyGif },
+    { weight: 0.20, fn: getDynamicJoke },
+    { weight: 0.10, fn: getBanglaJoke },
+    { weight: 0.10, fn: getUserContent }
   ];
   
-  // Select based on weighted probability
   let selected = null;
   let cumulative = 0;
   for (const source of contentSources) {
@@ -283,7 +235,7 @@ app.get('/api/joke', async (req, res) => {
       requestId: Math.random().toString(36).substring(7)
     });
   } catch (error) {
-    // Fallback: Try another source
+    // Fallback logic
     for (const source of contentSources) {
       if (source.fn !== selected.fn) {
         try {
@@ -297,60 +249,30 @@ app.get('/api/joke', async (req, res) => {
       }
     }
     
-    // Ultimate fallback
     return res.json({
       type: 'text',
-      content: '😊 কিছু মজার পাচ্ছি না! আবার চেষ্টা করুন।\n\n"কম্পিউটার প্রোগ্রামাররা কেন ডার্ক মোড ব্যবহার করে? কারণ লাইট তাদের বাগ দেখায়!"',
+      content: '😊 "কম্পিউটার প্রোগ্রামাররা কেন ডার্ক মোড ব্যবহার করে? কারণ লাইট তাদের বাগ দেখায়!"',
       timestamp: new Date().toISOString()
     });
   }
 });
 
-// ==== USER SUBMISSION ENDPOINT ====
+// ==== SUBMISSION & STATS ENDPOINTS ====
 app.post('/api/content', async (req, res) => {
   try {
     const { type, content, url, title } = req.body;
-    
-    const newContent = await Content.create({
-      type,
-      content,
-      url,
-      title,
-      isBangla: true,
-      source: 'user'
-    });
-    
-    res.json({ 
-      success: true, 
-      message: 'Content added successfully!',
-      id: newContent._id 
-    });
+    const newContent = await Content.create({ type, content, url, title, isBangla: true, source: 'user' });
+    res.json({ success: true, message: 'Content added successfully!', id: newContent._id });
   } catch (error) {
     res.status(400).json({ error: 'Failed to add content' });
   }
 });
 
-// ==== GET ALL CONTENT (Admin) ====
-app.get('/api/content', async (req, res) => {
-  try {
-    const content = await Content.find().sort({ createdAt: -1 }).limit(50);
-    res.json(content);
-  } catch (error) {
-    res.status(500).json({ error: 'Failed to fetch content' });
-  }
-});
-
-// ==== STATS ENDPOINT ====
 app.get('/api/stats', async (req, res) => {
   try {
-    const total = await Content.countDocuments();
-    const jokes = await Content.countDocuments({ type: 'joke' });
-    const memes = await Content.countDocuments({ type: 'meme' });
-    
+    const total = isConnected ? await Content.countDocuments() : 0;
     res.json({
       totalContent: total,
-      totalJokes: jokes,
-      totalMemes: memes,
       activeSources: ['reddit', 'giphy', 'joke_apis', 'bangla_apis', 'user_db']
     });
   } catch (error) {
@@ -358,12 +280,10 @@ app.get('/api/stats', async (req, res) => {
   }
 });
 
-// Start server
-const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => {
-  console.log(`✅ Server running on port ${PORT}`);
-  console.log('📊 Content sources: Reddit, Giphy, Joke APIs, Bangla APIs, User DB');
-  console.log('🔄 Everything is dynamic and unlimited!');
-});
+// Vercel / Local Host Management
+if (process.env.NODE_ENV !== 'production') {
+  const PORT = process.env.PORT || 3000;
+  app.listen(PORT, () => console.log(`✅ Server running locally on port ${PORT}`));
+}
 
 module.exports = app;
