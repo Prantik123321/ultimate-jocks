@@ -1,143 +1,318 @@
 <!DOCTYPE html>
 <html lang="bn">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>আনলিমিটেড জোকস ও মেমস</title>
-  <style>
-    * { box-sizing: border-box; margin: 0; padding: 0; }
-    body {
-      font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
-      background: #18191a;
-      color: #e4e6eb;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      min-height: 100vh;
-      padding: 15px;
-    }
-    .card {
-      background: #242526;
-      width: 100%;
-      max-width: 440px;
-      padding: 24px;
-      border-radius: 16px;
-      text-align: center;
-      box-shadow: 0 8px 24px rgba(0,0,0,0.4);
-    }
-    .header {
-      font-size: 20px;
-      font-weight: bold;
-      margin-bottom: 15px;
-      color: #f0f2f5;
-    }
-    .content-box {
-      min-height: 260px;
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      align-items: center;
-      margin: 15px 0;
-    }
-    .media {
-      max-width: 100%;
-      max-height: 280px;
-      border-radius: 10px;
-      margin-bottom: 12px;
-      object-fit: contain;
-    }
-    .joke-text {
-      font-size: 18px;
-      line-height: 1.6;
-      white-space: pre-line;
-      font-weight: 500;
-    }
-    .btn {
-      background: #2d88ff;
-      color: white;
-      border: none;
-      padding: 14px 20px;
-      font-size: 17px;
-      font-weight: bold;
-      border-radius: 30px;
-      cursor: pointer;
-      width: 100%;
-      transition: background 0.2s, transform 0.1s;
-    }
-    .btn:hover { background: #1a73e8; }
-    .btn:active { transform: scale(0.98); }
-    .btn:disabled { background: #4e5052; cursor: not-allowed; }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>হাসি-মজা ∞ মেম</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            background: #0b0e14;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif;
+            padding: 1rem;
+            color: #f0f3fa;
+        }
+        .card {
+            max-width: 720px;
+            width: 100%;
+            background: #1a1f2b;
+            border-radius: 2.5rem;
+            padding: 2rem 1.8rem 2.2rem;
+            box-shadow: 0 20px 40px -12px rgba(0,0,0,0.8), 0 0 0 1px #2c3342 inset;
+            transition: all 0.2s;
+            backdrop-filter: blur(2px);
+        }
+        h1 {
+            font-size: 1.9rem;
+            font-weight: 600;
+            letter-spacing: -0.5px;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-bottom: 1.2rem;
+            color: #eaeef6;
+            border-bottom: 1px solid #2f3748;
+            padding-bottom: 0.7rem;
+        }
+        h1 span {
+            background: #2f3b4f;
+            padding: 0.1rem 0.8rem;
+            border-radius: 40px;
+            font-size: 1rem;
+            font-weight: 400;
+            color: #b9c8e6;
+            margin-left: 0.2rem;
+        }
+        .content-box {
+            background: #10141e;
+            border-radius: 2rem;
+            padding: 1.8rem 1.5rem;
+            min-height: 280px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            border: 1px solid #29303f;
+            box-shadow: inset 0 6px 12px rgba(0,0,0,0.5);
+            transition: 0.15s;
+            margin-bottom: 1.8rem;
+        }
+        #contentDisplay {
+            width: 100%;
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 0.8rem;
+        }
+        #contentDisplay img {
+            max-width: 100%;
+            max-height: 340px;
+            border-radius: 20px;
+            object-fit: contain;
+            background: #0d111a;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.6);
+            border: 1px solid #2f384b;
+        }
+        .joke-text {
+            font-size: 1.4rem;
+            line-height: 1.6;
+            word-break: break-word;
+            color: #eef3fe;
+            background: #1b212e;
+            padding: 1rem 1.2rem;
+            border-radius: 28px;
+            width: 100%;
+            border-left: 4px solid #5d7bb0;
+            box-shadow: 0 2px 0 #2d3548;
+        }
+        .joke-text small {
+            display: block;
+            margin-top: 0.5rem;
+            font-size: 1rem;
+            color: #96a9cf;
+            border-top: 1px dashed #2f3b4f;
+            padding-top: 0.5rem;
+        }
+        .status-tip {
+            color: #7c8bb0;
+            font-size: 0.95rem;
+            background: #1b212e;
+            padding: 0.4rem 1.2rem;
+            border-radius: 30px;
+            display: inline-block;
+            border: 1px solid #2f384b;
+        }
+        .actions {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            justify-content: center;
+            gap: 1rem;
+            margin-top: 0.6rem;
+        }
+        .btn {
+            background: #29334a;
+            border: none;
+            color: white;
+            font-weight: 600;
+            font-size: 1.2rem;
+            padding: 0.8rem 2rem;
+            border-radius: 60px;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.6rem;
+            cursor: pointer;
+            transition: 0.15s;
+            box-shadow: 0 4px 0 #0d111a, 0 6px 12px rgba(0,0,0,0.4);
+            border: 1px solid #3e4a63;
+            flex: 1 1 auto;
+            justify-content: center;
+        }
+        .btn:active {
+            transform: translateY(3px);
+            box-shadow: 0 1px 0 #0d111a;
+        }
+        .btn:disabled {
+            opacity: 0.5;
+            transform: translateY(2px);
+            box-shadow: 0 2px 0 #0d111a;
+            pointer-events: none;
+        }
+        .btn-primary {
+            background: #3d5a8c;
+            border-color: #5f7db8;
+            color: white;
+        }
+        .btn-secondary {
+            background: #2e384e;
+            border-color: #475571;
+        }
+        .footer-note {
+            text-align: center;
+            margin-top: 1.5rem;
+            font-size: 0.8rem;
+            color: #5d6e8f;
+            border-top: 1px solid #222b3c;
+            padding-top: 1rem;
+            letter-spacing: 0.3px;
+        }
+        .loader {
+            display: inline-block;
+            width: 40px;
+            height: 40px;
+            border: 4px solid #2f384b;
+            border-top: 4px solid #7b9be0;
+            border-radius: 50%;
+            animation: spin 0.9s linear infinite;
+            margin: 1rem 0;
+        }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+        .hidden { display: none !important; }
+    </style>
 </head>
 <body>
-
 <div class="card">
-  <div class="header">🔥 আনলিমিটেড ফানি জোকস ও মেমস 🔥</div>
-  <div class="content-box" id="container">
-    <p class="joke-text">লোড হচ্ছে...</p>
-  </div>
-  <button class="btn" id="next-btn" onclick="nextContent()">পরেরটা দেখুন ➡️</button>
+    <h1>🎭 হাসি-মজা ∞ <span>মেম</span></h1>
+    <div class="content-box">
+        <div id="contentDisplay">
+            <div id="loadingPlaceholder" class="loader"></div>
+            <div id="mainContent" class="hidden"></div>
+        </div>
+    </div>
+    <div class="actions">
+        <button class="btn btn-primary" id="nextBtn">⟳ পরেরটা দেখুন ➡️</button>
+    </div>
+    <div class="footer-note">🔮 প্রতিটি ক্লিকে নতুন মেম / জোক • ৮০% বাংলা</div>
 </div>
-
 <script>
-  let isFetching = false;
+    (function() {
+        const mainContent = document.getElementById('mainContent');
+        const loadingPlaceholder = document.getElementById('loadingPlaceholder');
+        const nextBtn = document.getElementById('nextBtn');
 
-  async function nextContent() {
-    if (isFetching) return;
-    isFetching = true;
+        let isFetching = false;
 
-    const container = document.getElementById('container');
-    const btn = document.getElementById('next-btn');
-    
-    btn.disabled = true;
-    container.innerHTML = '<p class="joke-text">নতুন কন্টেন্ট ফেচ করা হচ্ছে...</p>';
+        function setLoading(state) {
+            if (state) {
+                loadingPlaceholder.classList.remove('hidden');
+                mainContent.classList.add('hidden');
+                mainContent.innerHTML = '';
+                nextBtn.disabled = true;
+            } else {
+                loadingPlaceholder.classList.add('hidden');
+                mainContent.classList.remove('hidden');
+                nextBtn.disabled = false;
+            }
+            isFetching = state;
+        }
 
-    const controller = new AbortController();
-    const timeoutId = setTimeout(() => controller.abort(), 9000);
+        function renderContent(data) {
+            mainContent.innerHTML = '';
+            if (!data) {
+                mainContent.innerHTML = '<div class="joke-text">😵 কিছু পাওয়া যায়নি। আবার চেষ্টা করুন</div>';
+                return;
+            }
 
-    try {
-      const response = await fetch('/api/joke', { signal: controller.signal });
-      clearTimeout(timeoutId);
+            if (data.type === 'image') {
+                const img = document.createElement('img');
+                img.src = data.content;
+                img.alt = 'মেম';
+                img.loading = 'lazy';
+                img.onerror = function() {
+                    console.warn('img failed, fetching next');
+                    fetchNextContent(true);
+                };
+                mainContent.appendChild(img);
+            } else if (data.type === 'text') {
+                const div = document.createElement('div');
+                div.className = 'joke-text';
+                if (data.content.setup && data.content.delivery) {
+                    div.innerHTML = `<strong>${data.content.setup}</strong><br><span style="color:#b8caf0;">${data.content.delivery}</span>`;
+                } else if (data.content.joke || data.content.value) {
+                    div.textContent = data.content.joke || data.content.value || '😄';
+                } else if (typeof data.content === 'string') {
+                    div.textContent = data.content;
+                } else {
+                    div.textContent = '😆 মজার কিছু!';
+                }
+                const small = document.createElement('small');
+                small.textContent = '✦ মজা নিন';
+                div.appendChild(small);
+                mainContent.appendChild(div);
+            } else {
+                mainContent.innerHTML = '<div class="joke-text">✨ কিছু ভুল হয়েছে, আবার চেষ্টা করুন</div>';
+            }
+        }
 
-      if (!response.ok) throw new Error('API Error');
+        async function fetchNextContent(silentFail = false) {
+            if (isFetching) return;
+            setLoading(true);
 
-      const data = await response.json();
-      container.innerHTML = '';
+            const controller = new AbortController();
+            const timeoutId = setTimeout(() => controller.abort(), 8000);
 
-      if (data.type === 'image' && data.url) {
-        const img = document.createElement('img');
-        img.src = data.url;
-        img.className = 'media';
-        
-        // ইমেজ বা GIF লোড না হলে পরবর্তী API ট্রাই করবে
-        img.onerror = () => {
-          isFetching = false;
-          btn.disabled = false;
-          nextContent();
-        };
+            try {
+                const response = await fetch('/api/joke', {
+                    signal: controller.signal,
+                    headers: { 'Accept': 'application/json' }
+                });
+                clearTimeout(timeoutId);
 
-        container.appendChild(img);
-      }
+                if (!response.ok) {
+                    throw new Error(`HTTP ${response.status}`);
+                }
+                const json = await response.json();
+                if (json && json.type) {
+                    renderContent(json);
+                } else {
+                    throw new Error('invalid response');
+                }
+            } catch (err) {
+                clearTimeout(timeoutId);
+                console.warn('Fetch error:', err);
+                if (!silentFail) {
+                    mainContent.innerHTML = `<div class="joke-text">⏳ নেটওয়ার্ক সমস্যা। আবার চেষ্টা করুন</div>`;
+                    mainContent.classList.remove('hidden');
+                    loadingPlaceholder.classList.add('hidden');
+                } else {
+                    try {
+                        const retryResp = await fetch('/api/joke', { headers: { 'Accept': 'application/json' } });
+                        if (retryResp.ok) {
+                            const retryJson = await retryResp.json();
+                            if (retryJson && retryJson.type) {
+                                renderContent(retryJson);
+                                setLoading(false);
+                                return;
+                            }
+                        }
+                    } catch (_) {}
+                    mainContent.innerHTML = `<div class="joke-text">⚠️ মেম লোড হয়নি, বাটনে ক্লিক করুন</div>`;
+                    mainContent.classList.remove('hidden');
+                    loadingPlaceholder.classList.add('hidden');
+                }
+            } finally {
+                setLoading(false);
+            }
+        }
 
-      if (data.text || data.content) {
-        const p = document.createElement('p');
-        p.className = 'joke-text';
-        p.innerText = data.text || data.content;
-        container.appendChild(p);
-      }
-    } catch (err) {
-      // ব্যাকএন্ড বা নেটওয়ার্ক ডাউনে স্ক্রিন স্টাক না রেখে সাথে সাথে নতুন রিকোয়েস্ট পাঠাবে
-      isFetching = false;
-      btn.disabled = false;
-      setTimeout(nextContent, 1000);
-    } finally {
-      isFetching = false;
-      btn.disabled = false;
-    }
-  }
+        window.addEventListener('load', () => {
+            fetchNextContent(false);
+        });
 
-  nextContent();
+        nextBtn.addEventListener('click', () => {
+            fetchNextContent(false);
+        });
+    })();
 </script>
-
 </body>
 </html>
